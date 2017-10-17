@@ -62,21 +62,48 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+X = [ones(m, 1) X];
+
+z2=X*Theta1'
+a2 = sigmoid(z2);   
+a2 = [ones(m, 1) a2];
+
+z3=a2*Theta2'       
+a3 = sigmoid(z3);  
+
+%J = -(1/m)*sum((log(a3')*y + log(1-a3')*(1-y))); 
+
+for i = 1:m  
+ 	  a3i = (a3(i,:))';  
+    p = zeros(num_labels, 1); 
+    %y代表输出数值k,k属于[1,10]
+    %p即向量[0,0,1,0,0,0,0,0,0,0]  
+    p(y(i)) = 1;  
+    J=-(1/m)*((log(a3i'))*p +log(1-a3i')*(1-p)) + J
+
+    deta3=a3i-p
+    deta2=(Theta2(:,2:end)'*deta3).*(sigmoidGradient(z2(i,:)))'
+
+    a2i=a2(i,:)
+    a1i=X(i,:)
+     
+  	Theta1_grad=Theta1_grad+deta2*a1i;  
+  	Theta2_grad=Theta2_grad+deta3*a2i;  
+end
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+%regularization
+temp1=Theta1(:,2:size(Theta1, 2)).^2;  
+temp2=Theta2(:,2:size(Theta2, 2)).^2;   
+J = J+(lambda/(2*m))*(sum(temp1(:))+sum(temp2(:)));  
+  
+Theta1_grad = Theta1_grad / m;    
+Theta2_grad = Theta2_grad / m;  
+  
+Theta1(:,1) = 0;  
+Theta2(:,1) = 0;  
+Theta1_grad =Theta1_grad+lambda/m*Theta1;  
+Theta2_grad =Theta2_grad+lambda/m*Theta2; 
 
 
 
