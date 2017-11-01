@@ -25,13 +25,17 @@ centroids = zeros(K, n);
 %
 % Note: You can use a for-loop over the centroids to compute this.
 %
+cnt=zeros(K)
 
+for i=1:m
+	c=idx(i)  %==ixd(i,:)
+	cnt(c)=cnt(c)+1
+	centroids(c,:)=centroids(c,:)+X(i,:)
+end
 
-
-
-
-
-
+for i=1:K
+	centroids(i,:)=centroids(i,:)/cnt(i)
+end
 
 % =============================================================
 
